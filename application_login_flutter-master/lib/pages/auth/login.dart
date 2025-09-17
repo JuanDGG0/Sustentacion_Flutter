@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _registeredUsername;
   String? _registeredPassword;
+  bool _obscurePassword = true; // 👈 Para controlar si se ve la contraseña
 
   @override
   void initState() {
@@ -96,16 +97,41 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Contraseña',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
+                obscureText: _obscurePassword, // 👈 aquí lo aplicamos
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese su contraseña';
                   }
+
+                  final passwordRegex = RegExp(
+                    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$',
+                  );
+
+                  if (!passwordRegex.hasMatch(value)) {
+                    return 'Debe tener entre 8-16 caracteres, incluir:\n'
+                        '- Una mayúscula\n'
+                        '- Una minúscula\n'
+                        '- Un número\n'
+                        '- Un caracter especial (@\$!%*?&)';
+                  }
+
                   return null;
                 },
               ),

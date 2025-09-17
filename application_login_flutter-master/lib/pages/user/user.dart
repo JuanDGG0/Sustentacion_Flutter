@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/appbar.dart';
+import '../../data/notifiers.dart'; // <- usamos el mailNotifier
 
 class UserScreen extends StatelessWidget {
   final String username;
@@ -31,53 +32,62 @@ class UserScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Center(
-              child: CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.blue,
-                child: Icon(
-                  Icons.person,
-                  size: 70,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    _buildInfoRow('Usuario:', username),
-                    const SizedBox(height: 15),
-                    _buildInfoRow('Email:', '$username@demo.com'),
-                    const SizedBox(height: 15),
-                    _buildInfoRow(
-                      'Contraseña:',
-                      '${'*' * password.length} (${password.length} caracteres)',
+        child: ValueListenableBuilder<String>(
+          valueListenable: mailNotifier,
+          builder: (context, currentEmail, _) {
+            final email = currentEmail.isNotEmpty
+                ? currentEmail
+                : '$username@demo.com';
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Center(
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.blue,
+                    child: Icon(
+                      Icons.person,
+                      size: 70,
+                      color: Colors.white,
                     ),
-                    if (!isPasswordValid)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Text(
-                          '⚠ La contraseña no cumple con los requisitos de seguridad.',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+                const SizedBox(height: 30),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        _buildInfoRow('Usuario:', username),
+                        const SizedBox(height: 15),
+                        _buildInfoRow('Email:', email),
+                        const SizedBox(height: 15),
+                        _buildInfoRow(
+                          'Contraseña:',
+                          '${'*' * password.length} (${password.length} caracteres)',
+                        ),
+                        if (!isPasswordValid)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Text(
+                              '⚠ La contraseña no cumple con los requisitos de seguridad.',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  // Método helper para mostrar la información en filas
+
   Widget _buildInfoRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

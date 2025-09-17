@@ -21,6 +21,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
   bool _isActive = true;
 
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
   void _register() {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
@@ -30,7 +33,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
         return;
       }
 
-      // Solo enviamos username, email y password
       final userData = {
         'username': _usernameController.text.trim(),
         'email': _emailController.text.trim(),
@@ -89,7 +91,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Username
               TextFormField(
                 controller: _usernameController,
                 decoration: const InputDecoration(
@@ -107,7 +108,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
               const SizedBox(height: 20),
 
-              // Email
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -121,14 +121,13 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
               const SizedBox(height: 20),
 
-              // Perfil (antes llamado "Rol")
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Perfil',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.assignment_ind),
                 ),
-                value: _selectedRole,
+                initialValue: _selectedRole,
                 items: _roles.map((role) {
                   return DropdownMenuItem<String>(
                     value: role,
@@ -144,29 +143,49 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
               const SizedBox(height: 20),
 
-              // Contraseña
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
                   labelText: 'Contraseña',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
                 validator: _validatePassword,
               ),
 
               const SizedBox(height: 20),
 
-              // Confirmar Contraseña
               TextFormField(
                 controller: _confirmPasswordController,
-                decoration: const InputDecoration(
+                obscureText: _obscureConfirmPassword,
+                decoration: InputDecoration(
                   labelText: 'Confirmar Contraseña',
-                  prefixIcon: Icon(Icons.lock_outline),
-                  border: OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirmPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor confirme su contraseña';
@@ -177,7 +196,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
               const SizedBox(height: 20),
 
-              // Estado (antes solo decía "Activo")
               SwitchListTile(
                 title: Text('Estado: ${_isActive ? 'Activo' : 'Inactivo'}'),
                 value: _isActive,
@@ -191,7 +209,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
               const SizedBox(height: 30),
 
-              // Botones
               Row(
                 children: [
                   Expanded(

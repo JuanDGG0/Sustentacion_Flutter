@@ -33,11 +33,11 @@ class CustomTheme {
       colorScheme: const ColorScheme.light().copyWith(
         primary: primaryColor,
         secondary: secondaryColor,
-        background: backgroundLight,
+        surface: backgroundLight,
       ),
       scaffoldBackgroundColor: backgroundLight,
       appBarTheme: const AppBarTheme(
-        color: primaryColor,
+        backgroundColor: primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
         titleTextStyle: TextStyle(
           color: Colors.white,
@@ -119,11 +119,11 @@ class CustomTheme {
       colorScheme: const ColorScheme.dark().copyWith(
         primary: primaryColor,
         secondary: secondaryColor,
-        background: backgroundDark,
+        surface: backgroundDark,
       ),
       scaffoldBackgroundColor: backgroundDark,
       appBarTheme: const AppBarTheme(
-        color: primaryDark,
+        backgroundColor: primaryDark,
         iconTheme: IconThemeData(color: Colors.white),
         titleTextStyle: TextStyle(
           color: Colors.white,
